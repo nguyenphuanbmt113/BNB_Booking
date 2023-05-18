@@ -7,6 +7,20 @@ import { EmailConfirmEntity } from '../entities/emailConfirm.entity';
 import { PasswordConfirmEntity } from '../entities/passwordConfirm.entity';
 import { Reservation } from '../entities/reservation.entity';
 import { Room } from '../entities/room.entity';
+import {
+  CustomRule,
+  Detail,
+  DetailChoice,
+  Rule,
+  RuleChoice,
+} from '../entities/rule.entity';
+import { AmenityGroup, AmenityItem } from '../entities/amenity.entity';
+import { Photo } from '../entities/photo.entity';
+import { Rating } from '../entities/rating.entity';
+import { Review } from '../entities/review.entity';
+import { Discount } from '../entities/discount.entity';
+import { List } from '../entities/list.entity';
+import { Country } from '../entities/country.entity';
 
 @Module({
   imports: [
@@ -27,6 +41,24 @@ import { Room } from '../entities/room.entity';
           PasswordConfirmEntity,
           Reservation,
           Room,
+
+          Country,
+          List,
+          Discount,
+          Reservation,
+
+          Review,
+          Rating,
+          Photo,
+
+          AmenityGroup,
+          AmenityItem,
+
+          Rule,
+          RuleChoice,
+          CustomRule,
+          Detail,
+          DetailChoice,
         ],
         synchronize: true,
       }),

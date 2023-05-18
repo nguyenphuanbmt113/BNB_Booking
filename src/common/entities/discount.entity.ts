@@ -24,7 +24,7 @@ export class Discount extends BaseClassEntity {
   @IsInt()
   percent: number;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'date', nullable: true })
   @IsDate()
   endDate: Date;
 }

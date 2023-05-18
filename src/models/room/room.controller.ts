@@ -1,10 +1,6 @@
-import { Controller, UseGuards } from '@nestjs/common';
-import { Get, Post, Body, Put, Param, Delete, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { Room } from 'src/common/entities/room.entity';
 import { RoomService } from './room.service';
-import { AuthenticationGuard } from '../auth/guards/jwt-guards.guard';
-import { UserDeco } from '../auth/decorator/user.decorator';
-import { User } from 'src/common/entities/user.entity';
 @Controller('room')
 export class RoomController {
   constructor(private readonly roomsService: RoomService) {}
