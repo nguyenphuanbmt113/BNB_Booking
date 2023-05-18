@@ -139,7 +139,6 @@ export class AuthService {
       user.refresh_token = refresh_token;
       await user.save();
       return {
-        refresh_token,
         token,
         user,
       };

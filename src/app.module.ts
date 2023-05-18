@@ -6,6 +6,8 @@ import * as Joi from '@hapi/joi';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './common/database/database.module';
 import { AuthModule } from './models/auth/auth.module';
+import { ReservationModule } from './models/reservation/reservation.module';
+import { RoomModule } from './models/room/room.module';
 @Module({
   imports: [
     RoleModule,
@@ -23,6 +25,8 @@ import { AuthModule } from './models/auth/auth.module';
     }),
     DatabaseModule,
     AuthModule,
+    ReservationModule,
+    RoomModule,
   ],
   controllers: [AppController],
   providers: [AppService],

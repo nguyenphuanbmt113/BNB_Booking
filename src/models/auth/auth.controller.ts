@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { AuthenticationGuard } from './guards/jwt-guards.guard';
+import { AdminAuthGuard } from './guards/admin.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -23,10 +25,10 @@ export class AuthController {
 
   @Get('forgot-password')
   async forgotPassword(@Body('email') email: string) {
-    console.log('email:', email);
     return await this.authService.forgotPassword(email);
   }
 
+  @UseGuards(AuthenticationGuard, AdminAuthGuard)
   @Get('')
   async findAll() {
     return await this.authService.findAll();

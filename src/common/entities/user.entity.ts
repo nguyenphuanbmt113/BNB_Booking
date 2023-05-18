@@ -5,11 +5,16 @@ import {
   BeforeInsert,
   Column,
   Entity,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import BaseClassEntity from './global/base-entity.entity';
 import { Role } from './role.entity';
+import { Reservation } from './reservation.entity';
+import { Review } from './review.entity';
+import { Room } from './room.entity';
+import { List } from './list.entity';
 
 @Entity()
 export class User extends BaseClassEntity {
@@ -53,6 +58,18 @@ export class User extends BaseClassEntity {
 
   @OneToMany(() => Role, (role) => role.user, { eager: true })
   roles: Role[];
+
+  @ManyToMany(() => Reservation, (reservation) => reservation.guests)
+  reservations: Reservation[];
+
+  @OneToMany(() => List, (list) => list.owner)
+  saveLists: List[];
+
+  @OneToMany(() => Room, (room) => room.host)
+  rooms: Room[];
+
+  @OneToMany(() => Review, (review) => review.guest)
+  reviews: Review[];
 
   // ===== Inverse side Relation =====
 

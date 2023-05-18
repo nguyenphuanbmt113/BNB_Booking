@@ -5,6 +5,8 @@ import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { EmailConfirmEntity } from '../entities/emailConfirm.entity';
 import { PasswordConfirmEntity } from '../entities/passwordConfirm.entity';
+import { Reservation } from '../entities/reservation.entity';
+import { Room } from '../entities/room.entity';
 
 @Module({
   imports: [
@@ -18,7 +20,14 @@ import { PasswordConfirmEntity } from '../entities/passwordConfirm.entity';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        entities: [User, Role, EmailConfirmEntity, PasswordConfirmEntity],
+        entities: [
+          User,
+          Role,
+          EmailConfirmEntity,
+          PasswordConfirmEntity,
+          Reservation,
+          Room,
+        ],
         synchronize: true,
       }),
     }),
