@@ -18,6 +18,11 @@ import { Reservation } from './reservation.entity';
 import { Review } from './review.entity';
 import { CustomRule, DetailChoice, RuleChoice } from './rule.entity';
 import { User } from './user.entity';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { DateRange } from '../utils/datetime.utils';
 
 export enum RoomType {
   Apartment = 'Apartment',
@@ -128,98 +133,98 @@ export class Room extends BaseClassEntity {
   lists: List[];
 
   // ===== Domain Methods =====
-  // validateReservation(reservation: Reservation): boolean {
-  //   const currentTime = new Date();
-  //   if (
-  //     currentTime > reservation.checkIn ||
-  //     currentTime > reservation.checkOut ||
-  //     reservation.checkIn >= reservation.checkOut
-  //   ) {
-  //     throw new BadRequestException('잘못된 예약 날짜입니다.');
-  //   }
+  validateReservation(reservation: Reservation): boolean {
+    const currentTime = new Date();
+    if (
+      currentTime > reservation.checkIn ||
+      currentTime > reservation.checkOut ||
+      reservation.checkIn >= reservation.checkOut
+    ) {
+      throw new BadRequestException('잘못된 예약 날짜입니다.');
+    }
 
-  //   if (!this.isAccommodable(reservation.getStayTerm())) {
-  //     throw new BadRequestException('예약 불가능한 일정입니다.');
-  //   }
+    if (!this.isAccommodable(reservation.getStayTerm())) {
+      throw new BadRequestException('예약 불가능한 일정입니다.');
+    }
 
-  //   const totalPrice = this.calculateTotalPrice(
-  //     reservation.getDurationInDyas(),
-  //     reservation.guestCnt,
-  //   );
-  //   if (totalPrice != reservation.price) {
-  //     throw new BadRequestException(
-  //       `가격이 변동되었습니다. (현재가: ${totalPrice})`,
-  //     );
-  //   }
+    const totalPrice = this.calculateTotalPrice(
+      reservation.getDurationInDyas(),
+      reservation.guestCnt,
+    );
+    if (totalPrice != reservation.price) {
+      throw new BadRequestException(
+        `가격이 변동되었습니다. (현재가: ${totalPrice})`,
+      );
+    }
 
-  //   return true;
-  // }
+    return true;
+  }
 
-  // calculateTotalPrice(stayDays: number, guestCnt: number): number {
-  //   return this.calculatePriceInDetail(stayDays, guestCnt).totalPrice;
-  // }
+  calculateTotalPrice(stayDays: number, guestCnt: number): number {
+    return this.calculatePriceInDetail(stayDays, guestCnt).totalPrice;
+  }
 
-  // calculatePriceInDetail(stayDays: number, guestCnt: number): IPriceDetail {
-  //   const accommodationFee = this.price * stayDays;
-  //   const discountFee = this.calculateDiscountFee(accommodationFee, stayDays);
-  //   const cleaningFee = this.cleaningFee || 0;
+  calculatePriceInDetail(stayDays: number, guestCnt: number): IPriceDetail {
+    const accommodationFee = this.price * stayDays;
+    const discountFee = this.calculateDiscountFee(accommodationFee, stayDays);
+    const cleaningFee = this.cleaningFee || 0;
 
-  //   const serviceFee = this.calculateServiceFee(
-  //     accommodationFee - discountFee + cleaningFee,
-  //   );
-  //   const taxFee = this.calculateTaxFee(serviceFee, stayDays, guestCnt);
+    const serviceFee = this.calculateServiceFee(
+      accommodationFee - discountFee + cleaningFee,
+    );
+    const taxFee = this.calculateTaxFee(serviceFee, stayDays, guestCnt);
 
-  //   const totalPrice =
-  //     accommodationFee - discountFee + cleaningFee + serviceFee + taxFee;
-  //   return {
-  //     accommodationFee,
-  //     discountFee,
-  //     cleaningFee,
-  //     serviceFee,
-  //     taxFee,
-  //     totalPrice,
-  //   };
-  // }
+    const totalPrice =
+      accommodationFee - discountFee + cleaningFee + serviceFee + taxFee;
+    return {
+      accommodationFee,
+      discountFee,
+      cleaningFee,
+      serviceFee,
+      taxFee,
+      totalPrice,
+    };
+  }
 
-  // private isAccommodable(stayTerm: DateRange): boolean {
-  //   if (!this.reservations)
-  //     throw new InternalServerErrorException("Rservations does't exist.");
-  //   return !this.reservations
-  //     .filter((reservation) => reservation.isScheduled())
-  //     .map((reservation) => reservation.getStayTerm())
-  //     .some((otherStayRange) => otherStayRange.intersect(stayTerm));
-  // }
+  private isAccommodable(stayTerm: DateRange): boolean {
+    if (!this.reservations)
+      throw new InternalServerErrorException("Rservations does't exist.");
+    return !this.reservations
+      .filter((reservation) => reservation.isScheduled())
+      .map((reservation) => reservation.getStayTerm())
+      .some((otherStayRange) => otherStayRange.intersect(stayTerm));
+  }
 
-  // private calculateDiscountFee(price: number, stayDays: number): number {
-  //   if (!this.discounts)
-  //     throw new InternalServerErrorException("Discounts does't exist.");
-  //   return this.discounts
-  //     .map((discount) => discount.calculateDiscountFee(price, stayDays))
-  //     .reduce((acc, cur) => Math.max(acc, cur), 0);
-  // }
+  private calculateDiscountFee(price: number, stayDays: number): number {
+    if (!this.discounts)
+      throw new InternalServerErrorException("Discounts does't exist.");
+    return this.discounts
+      .map((discount) => discount.calculateDiscountFee(price, stayDays))
+      .reduce((acc, cur) => Math.max(acc, cur), 0);
+  }
 
-  // private calculateServiceFee(price: number): number {
-  //   // TODO: Make Billing System
-  //   const commissionPercent = 15;
-  //   return price * (commissionPercent * 0.01);
-  // }
+  private calculateServiceFee(price: number): number {
+    // TODO: Make Billing System
+    const commissionPercent = 15;
+    return price * (commissionPercent * 0.01);
+  }
 
-  // private calculateTaxFee(
-  //   price: number,
-  //   stayDays: number,
-  //   guestCnt: number,
-  // ): number {
-  //   if (!this.country)
-  //     throw new InternalServerErrorException("Country does't exist.");
-  //   return this.country.calculateTax(this, price, stayDays, guestCnt);
-  // }
+  private calculateTaxFee(
+    price: number,
+    stayDays: number,
+    guestCnt: number,
+  ): number {
+    if (!this.country)
+      throw new InternalServerErrorException("Country does't exist.");
+    return this.country.calculateTax(this, price, stayDays, guestCnt);
+  }
 }
 
-// interface IPriceDetail {
-//   accommodationFee: number;
-//   discountFee: number;
-//   cleaningFee: number;
-//   serviceFee: number;
-//   taxFee: number;
-//   totalPrice: number;
-// }
+interface IPriceDetail {
+  accommodationFee: number;
+  discountFee: number;
+  cleaningFee: number;
+  serviceFee: number;
+  taxFee: number;
+  totalPrice: number;
+}

@@ -11,6 +11,7 @@ import {
 import BaseClassEntity from './global/base-entity.entity';
 import { User } from './user.entity';
 import { Room } from './room.entity';
+import { DateDiff, DateRange } from '../utils/datetime.utils';
 
 export enum ReservationStatus {
   REQUESTED = 'REQUESTED',
@@ -54,21 +55,20 @@ export class Reservation extends BaseClassEntity {
   @ManyToOne(() => Room, (room) => room.reservations)
   room: Room;
 
-  // getDurationInDyas(): number {
-  //   return DateDiff.inDays(this.checkIn, this.checkOut);
-  // }
+  getDurationInDyas(): number {
+    return DateDiff.inDays(this.checkIn, this.checkOut);
+  }
 
-  // getStayTerm(): DateRange {
-  //   const d = new Date(this.checkOut);
-  //   // To get the last night, subtract a day from checkOut date.
-  //   d.setDate(this.checkOut.getDate() - 1);
-  //   return new DateRange(this.checkIn, d);
-  // }
+  isScheduled(): boolean {
+    return (
+      this.status === ReservationStatus.REQUESTED ||
+      this.status === ReservationStatus.ACCEPTED
+    );
+  }
 
-  // isScheduled(): boolean {
-  //   return (
-  //     this.status === ReservationStatus.REQUESTED ||
-  //     this.status === ReservationStatus.ACCEPTED
-  //   );
-  // }
+  getStayTerm(): DateRange {
+    const d = new Date(this.checkOut);
+    d.setDate(this.checkOut.getDate() - 1);
+    return new DateRange(this.checkIn, d);
+  }
 }

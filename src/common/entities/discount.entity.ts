@@ -27,4 +27,30 @@ export class Discount extends BaseClassEntity {
   @Column({ type: 'date', nullable: true })
   @IsDate()
   endDate: Date;
+
+  calculateDiscountFee(price: number, stayDays: number) {
+    let result = 0;
+    const now = new Date();
+
+    if (
+      this.endDate.getTime() !== null &&
+      this.endDate.getTime() < now.getTime()
+    ) {
+      return result;
+    }
+
+    const isSatisfied = discountStrategies[this.type].isSatisfied(stayDays);
+    if (isSatisfied) result += price * (this.percent * 0.01);
+
+    return result;
+  }
 }
+export interface DiscountStrategy {
+  isSatisfied: (stayDays: number) => boolean;
+}
+
+export const discountStrategies: Record<DiscountType, DiscountStrategy> = {
+  Week: { isSatisfied: (stayDays) => (stayDays >= 7 ? true : false) },
+  Month: { isSatisfied: (stayDays) => (stayDays >= 28 ? true : false) },
+  Special: { isSatisfied: () => true },
+};

@@ -8,6 +8,7 @@ export class CreateReservationDto {
   checkIn: string;
 
   checkOut: string;
+
   @IsNumber()
   price: number;
 

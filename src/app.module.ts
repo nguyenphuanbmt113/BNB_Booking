@@ -8,6 +8,10 @@ import { DatabaseModule } from './common/database/database.module';
 import { AuthModule } from './models/auth/auth.module';
 import { ReservationModule } from './models/reservation/reservation.module';
 import { RoomModule } from './models/room/room.module';
+import { PhotoModule } from './models/photo/photo.module';
+import { DiscountModule } from './models/discount/discount.module';
+import { ReviewModule } from './models/review/review.module';
+import { ListModule } from './models/list/list.module';
 @Module({
   imports: [
     RoleModule,
@@ -27,6 +31,10 @@ import { RoomModule } from './models/room/room.module';
     AuthModule,
     ReservationModule,
     RoomModule,
+    PhotoModule,
+    DiscountModule,
+    ReviewModule,
+    ListModule,
   ],
   controllers: [AppController],
   providers: [AppService],

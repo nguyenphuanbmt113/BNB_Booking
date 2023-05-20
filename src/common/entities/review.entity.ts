@@ -8,6 +8,7 @@ import { Rating } from './rating.entity';
 export class Review extends BaseClassEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
   @ManyToOne(() => User, (user) => user.reviews)
   guest: User;
 

@@ -7,11 +7,15 @@ import {
 import { User } from 'src/common/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateReservationDto } from './dto/create-reservation.dto';
+import { Room } from 'src/common/entities/room.entity';
 
 @Injectable()
 export class ReservationService {
   @InjectRepository(Reservation)
   private reservationRepo: Repository<Reservation>;
+
+  @InjectRepository(Room)
+  private readonly roomRepository: Repository<Room>;
 
   async findOneById(id: number) {
     const reservation = await this.reservationRepo.findOne({
@@ -44,10 +48,17 @@ export class ReservationService {
   ): Promise<Reservation> {
     const reservation = this.reservationRepo.create({
       ...reserveRoomDTO,
-      guests: [guest],
+      guests: [{ id: guest.id }],
+      room: { id: reserveRoomDTO.roomId },
       checkIn: new Date(reserveRoomDTO.checkIn),
       checkOut: new Date(reserveRoomDTO.checkOut),
     });
+
+    const room = await this.roomRepository.findOneOrFail({
+      where: { id: reserveRoomDTO.roomId },
+      relations: ['reservations', 'discounts', 'country'],
+    });
+    await room.validateReservation(reservation);
 
     reservation.status = ReservationStatus.REQUESTED;
     return await this.reservationRepo.save(reservation);
