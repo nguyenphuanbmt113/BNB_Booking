@@ -54,7 +54,8 @@ export class ReservationService {
       checkOut: new Date(reserveRoomDTO.checkOut),
     });
 
-    const room = await this.roomRepository.findOneOrFail({
+    //timd phòng và kiển tra phòng xem có hợp kệ hay không
+    const room = await this.roomRepository.findOne({
       where: { id: reserveRoomDTO.roomId },
       relations: ['reservations', 'discounts', 'country'],
     });

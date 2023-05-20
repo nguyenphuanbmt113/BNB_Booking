@@ -134,30 +134,39 @@ export class Room extends BaseClassEntity {
 
   // ===== Domain Methods =====
   validateReservation(reservation: Reservation): boolean {
+    //kiểm tra: phải đăng ký ở tương lại
     const currentTime = new Date();
     if (
       currentTime > reservation.checkIn ||
       currentTime > reservation.checkOut ||
       reservation.checkIn >= reservation.checkOut
     ) {
-      throw new BadRequestException('잘못된 예약 날짜입니다.');
+      throw new BadRequestException('reservation wrong!');
     }
 
+    //kiểm tra
     if (!this.isAccommodable(reservation.getStayTerm())) {
-      throw new BadRequestException('예약 불가능한 일정입니다.');
+      throw new BadRequestException('can not reservation');
     }
 
+    //tính giá tiền
     const totalPrice = this.calculateTotalPrice(
       reservation.getDurationInDyas(),
       reservation.guestCnt,
     );
     if (totalPrice != reservation.price) {
-      throw new BadRequestException(
-        `가격이 변동되었습니다. (현재가: ${totalPrice})`,
-      );
+      throw new BadRequestException(`The price has changed: ${totalPrice})`);
     }
-
     return true;
+  }
+
+  private isAccommodable(stayTerm: DateRange): boolean {
+    if (!this.reservations)
+      throw new InternalServerErrorException("Rservations doesn't exist.");
+    return !this.reservations
+      .filter((reservation) => reservation.isScheduled())
+      .map((reservation) => reservation.getStayTerm())
+      .some((otherStayRange) => otherStayRange.intersect(stayTerm));
   }
 
   calculateTotalPrice(stayDays: number, guestCnt: number): number {
@@ -184,15 +193,6 @@ export class Room extends BaseClassEntity {
       taxFee,
       totalPrice,
     };
-  }
-
-  private isAccommodable(stayTerm: DateRange): boolean {
-    if (!this.reservations)
-      throw new InternalServerErrorException("Rservations does't exist.");
-    return !this.reservations
-      .filter((reservation) => reservation.isScheduled())
-      .map((reservation) => reservation.getStayTerm())
-      .some((otherStayRange) => otherStayRange.intersect(stayTerm));
   }
 
   private calculateDiscountFee(price: number, stayDays: number): number {

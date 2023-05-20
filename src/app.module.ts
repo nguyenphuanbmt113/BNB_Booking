@@ -12,6 +12,8 @@ import { PhotoModule } from './models/photo/photo.module';
 import { DiscountModule } from './models/discount/discount.module';
 import { ReviewModule } from './models/review/review.module';
 import { ListModule } from './models/list/list.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './models/auth/guards/role.guard';
 @Module({
   imports: [
     RoleModule,
@@ -37,6 +39,12 @@ import { ListModule } from './models/list/list.module';
     ListModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}
