@@ -117,7 +117,6 @@ export class AuthService {
       .addSelect('user.password')
       .where('user.email = :email', { email: email })
       .getOne();
-    console.log('user:', user);
     if (!user) {
       throw new NotFoundException('User does not exist in the database');
     }
@@ -152,7 +151,6 @@ export class AuthService {
       .addSelect('user.password')
       .where('user.email = :email', { email: email })
       .getOne();
-    console.log('user:', user);
     if (!user) {
       throw new NotFoundException('User does not exist in the database');
     }
@@ -162,7 +160,6 @@ export class AuthService {
           email: email,
           id: user.id,
         };
-        console.log('payload:', payload);
         const token = await this.jwt.signAsync(payload);
         const refresh_token = await this.jwt.signAsync({
           payload,
@@ -219,13 +216,11 @@ export class AuthService {
   }
 
   async verifiedActionConfirmEmail(token_email: string) {
-    console.log('token_email:', token_email);
     const user_confirm = await this.emailconfirmRepo.findOne({
       where: {
         token_email,
       },
     });
-    console.log('user_confirm:', user_confirm);
     if (user_confirm) {
       const user = await this.findOneByEmail(user_confirm.email);
       user.verifiedEmail = true;
@@ -242,7 +237,6 @@ export class AuthService {
         email,
       },
     });
-    console.log('invalidForgotassword:', invalidForgotassword);
     if (
       invalidForgotassword &&
       (new Date().getTime() - invalidForgotassword.timestamp.getTime()) /
@@ -268,7 +262,6 @@ export class AuthService {
   }
   async sendEmailForgotPassword(email: string) {
     const user = await this.findOneByEmail(email);
-    console.log('user:', user);
     const invalidForgotassword = await this.passwordConfirmRepo.findOne({
       where: {
         email,
@@ -291,13 +284,11 @@ export class AuthService {
       .addSelect('user.password')
       .where('user.email = :email', { email: email })
       .getOne();
-    console.log('user:', user);
     if (!user) {
       throw new HttpException('User Does not Found', HttpStatus.NOT_FOUND);
     }
     const check = await bcrypt.compareSync(password, user.password);
     delete user.password;
-    console.log('check:', check);
     return check;
   }
   async hassPass(password: string) {
@@ -308,7 +299,6 @@ export class AuthService {
     const user = await this.usersRepo.findOne({
       where: { email },
     });
-    console.log('user:', user);
     if (!user) {
       throw new HttpException('LOGIN_USER_NOT_FOUND', HttpStatus.NOT_FOUND);
     }
@@ -318,13 +308,11 @@ export class AuthService {
   }
   //set new Password
   async setNewPassword(resetPasswordDto: any) {
-    console.log('resetPasswordDto:', resetPasswordDto);
     let isNewPasswordChanged = false;
     const { email, token_password, currentPassword, newPassword } =
       resetPasswordDto;
     if (email && currentPassword) {
       const isValidPassword = await this.checkPassword(email, currentPassword);
-      console.log('isValidPassword:', isValidPassword);
       if (isValidPassword) {
         isNewPasswordChanged = await this.setPassword(email, newPassword);
       } else {

@@ -14,6 +14,8 @@ import { ReviewModule } from './models/review/review.module';
 import { ListModule } from './models/list/list.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './models/auth/guards/role.guard';
+import { CountryModule } from './models/country/country.module';
+import { AuthenticationGuard } from './models/auth/guards/jwt-guards.guard';
 @Module({
   imports: [
     RoleModule,
@@ -37,6 +39,7 @@ import { RolesGuard } from './models/auth/guards/role.guard';
     DiscountModule,
     ReviewModule,
     ListModule,
+    CountryModule,
   ],
   controllers: [AppController],
   providers: [
@@ -44,6 +47,10 @@ import { RolesGuard } from './models/auth/guards/role.guard';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard,
     },
   ],
 })

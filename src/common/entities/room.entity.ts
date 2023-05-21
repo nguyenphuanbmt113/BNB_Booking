@@ -145,7 +145,9 @@ export class Room extends BaseClassEntity {
     }
 
     //kiểm tra
+    console.log('this.reservations:', this.reservations);
     if (!this.isAccommodable(reservation.getStayTerm())) {
+      //false thì không thực hiện
       throw new BadRequestException('can not reservation');
     }
 
@@ -155,14 +157,14 @@ export class Room extends BaseClassEntity {
       reservation.guestCnt,
     );
     if (totalPrice != reservation.price) {
-      throw new BadRequestException(`The price has changed: ${totalPrice})`);
+      throw new BadRequestException(`The price has changed: ${totalPrice}`);
     }
     return true;
   }
 
   private isAccommodable(stayTerm: DateRange): boolean {
     if (!this.reservations)
-      throw new InternalServerErrorException("Rservations doesn't exist.");
+      throw new InternalServerErrorException("Reservations doesn't exist.");
     return !this.reservations
       .filter((reservation) => reservation.isScheduled())
       .map((reservation) => reservation.getStayTerm())

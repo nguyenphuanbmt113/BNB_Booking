@@ -70,7 +70,6 @@ export class Reservation extends BaseClassEntity {
     const d = new Date(this.checkOut);
     d.setDate(this.checkOut.getDate() - 1);
     const a = new DateRange(this.checkIn, d);
-    console.log('a:', a);
     return a;
   }
 }

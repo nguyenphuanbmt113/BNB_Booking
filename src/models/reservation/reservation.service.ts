@@ -26,8 +26,10 @@ export class ReservationService {
   }
 
   async findAll() {
-    const users = await this.reservationRepo.find();
-    return users;
+    const reservations = await this.reservationRepo.find({
+      relations: ['room'],
+    });
+    return reservations;
   }
 
   async delete(id: number) {
