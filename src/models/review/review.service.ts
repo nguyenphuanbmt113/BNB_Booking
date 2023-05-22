@@ -38,7 +38,7 @@ export class ReviewService {
 
   async findAll() {
     const review = await this.reviewsRepository.find({
-      relations: ['guest', 'room'],
+      relations: ['guest', 'room', 'ratings'],
     });
     return review;
   }
@@ -46,6 +46,7 @@ export class ReviewService {
   async findAllReviewOfUser(id: number) {
     const review = await this.reviewsRepository.find({
       where: { guestId: id },
+      relations: ['guest', 'room', 'ratings'],
     });
     return review;
   }
@@ -53,6 +54,7 @@ export class ReviewService {
   async findAllReviewOfRoom(id: number) {
     const review = await this.reviewsRepository.find({
       where: { roomId: id },
+      relations: ['guest', 'room', 'ratings'],
     });
     return review;
   }

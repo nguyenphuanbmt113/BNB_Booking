@@ -8,6 +8,7 @@ import { User } from 'src/common/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { Room } from 'src/common/entities/room.entity';
+import { UpdateReservationDto } from './dto/update-reservation.dto';
 
 @Injectable()
 export class ReservationService {
@@ -38,7 +39,7 @@ export class ReservationService {
     return reservation;
   }
 
-  async update(id: number, data: any) {
+  async update(id: number, data: UpdateReservationDto) {
     const reservation = await this.findOneById(id);
     Object.assign(reservation, data);
     return this.reservationRepo.save(reservation);
