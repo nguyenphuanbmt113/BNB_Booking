@@ -9,17 +9,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Room } from 'src/common/entities/room.entity';
-import { RoomService } from './room.service';
-import { AuthenticationGuard } from '../auth/guards/jwt-guards.guard';
-import { UserDeco } from '../auth/decorator/user.decorator';
 import { User } from 'src/common/entities/user.entity';
+import { UserDeco } from '../auth/decorator/user.decorator';
+import { AuthenticationGuard } from '../auth/guards/jwt-guards.guard';
+import { RoomService } from './room.service';
 @Controller('room')
 export class RoomController {
   constructor(private readonly roomsService: RoomService) {}
 
   @Post()
   @UseGuards(AuthenticationGuard)
-  //@Roles(UserRole.Host)
   async create(
     @UserDeco() user: User,
     @Body() createRoomDto: any,
@@ -32,7 +31,6 @@ export class RoomController {
     return await this.roomsService.findAll();
   }
 
-  //@Roles(UserRole.Host)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.roomsService.findOne(+id);

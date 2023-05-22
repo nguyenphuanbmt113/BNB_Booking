@@ -1,21 +1,18 @@
+import * as Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RoleModule } from './models/role/role.module';
-import * as Joi from '@hapi/joi';
-import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './common/database/database.module';
 import { AuthModule } from './models/auth/auth.module';
-import { ReservationModule } from './models/reservation/reservation.module';
-import { RoomModule } from './models/room/room.module';
-import { PhotoModule } from './models/photo/photo.module';
-import { DiscountModule } from './models/discount/discount.module';
-import { ReviewModule } from './models/review/review.module';
-import { ListModule } from './models/list/list.module';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './models/auth/guards/role.guard';
 import { CountryModule } from './models/country/country.module';
-import { AuthenticationGuard } from './models/auth/guards/jwt-guards.guard';
+import { DiscountModule } from './models/discount/discount.module';
+import { ListModule } from './models/list/list.module';
+import { PhotoModule } from './models/photo/photo.module';
+import { ReservationModule } from './models/reservation/reservation.module';
+import { ReviewModule } from './models/review/review.module';
+import { RoleModule } from './models/role/role.module';
+import { RoomModule } from './models/room/room.module';
 @Module({
   imports: [
     RoleModule,
@@ -42,12 +39,6 @@ import { AuthenticationGuard } from './models/auth/guards/jwt-guards.guard';
     CountryModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

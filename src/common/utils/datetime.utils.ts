@@ -27,6 +27,22 @@ export const DateDiff = {
   },
 };
 
+export const DateDiffv2 = {
+  indays: function (d1: Date, d2: Date) {
+    const t1 = new Date(d1).getTime();
+    const t2 = new Date(d2).getTime();
+
+    return Math.trunc((t1 - t2) / (24 * 3600 * 1000));
+  },
+
+  inWeek: function (d1: Date, d2: Date) {
+    const t1 = new Date(d1).getTime();
+    const t2 = new Date(d2).getTime();
+
+    return Math.trunc((t1 - t2) / (7 * 24 * 3600 * 1000));
+  },
+};
+
 export class DateRange {
   constructor(startDate: Date, endDate: Date) {
     this.startDate = startDate;

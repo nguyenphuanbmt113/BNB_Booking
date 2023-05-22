@@ -20,7 +20,7 @@ export class ReservationService {
   async findOneById(id: number) {
     const reservation = await this.reservationRepo.findOne({
       where: { id },
-      relations: ['role'],
+      relations: ['room'],
     });
     return reservation;
   }
@@ -50,8 +50,8 @@ export class ReservationService {
   ): Promise<Reservation> {
     const reservation = this.reservationRepo.create({
       ...reserveRoomDTO,
-      guests: [{ id: guest.id }],
-      room: { id: reserveRoomDTO.roomId },
+      guests: [{ id: +guest.id }],
+      room: { id: +reserveRoomDTO.roomId },
       checkIn: new Date(reserveRoomDTO.checkIn),
       checkOut: new Date(reserveRoomDTO.checkOut),
     });

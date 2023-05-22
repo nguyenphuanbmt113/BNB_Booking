@@ -1,2 +1,0 @@
-** USER **
-service: findOne, findAll, Update, delete, generalToken, login, register, createRole

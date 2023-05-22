@@ -1,7 +1,5 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthenticationGuard } from './guards/jwt-guards.guard';
-import { AdminAuthGuard } from './guards/admin.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -13,9 +11,15 @@ export class AuthController {
   async createAccount(@Body() createUserDto: any) {
     return await this.authService.signUp(createUserDto);
   }
+
   @Post('sign-in')
   async signIn(@Body() data: any) {
     return await this.authService.signIn(data);
+  }
+
+  @Post('sign-in-admin')
+  async signInAdmin(@Body() data: any) {
+    return await this.authService.signInAdmin(data);
   }
 
   @Get('verified-email/:token_email')
@@ -28,10 +32,18 @@ export class AuthController {
     return await this.authService.forgotPassword(email);
   }
 
-  @UseGuards(AuthenticationGuard, AdminAuthGuard)
   @Get('')
   async findAll() {
     return await this.authService.findAll();
+  }
+  @Get(':id')
+  async findOne(@Param('id') id: number) {
+    return await this.authService.findOneById(id);
+  }
+
+  @Get('email/:email')
+  async findOneByEmail(@Param('email') email: string) {
+    return await this.authService.findOneByEmail(email);
   }
 
   @Post('change-password')

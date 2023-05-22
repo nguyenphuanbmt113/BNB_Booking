@@ -36,7 +36,7 @@ export class AuthService {
   async findOneById(id: number) {
     const user = await this.usersRepo.findOne({
       where: { id },
-      relations: ['role'],
+      relations: ['roles'],
     });
     return user;
   }
@@ -148,9 +148,11 @@ export class AuthService {
     const { email, password } = data;
     const user = await this.usersRepo
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'roles')
       .addSelect('user.password')
       .where('user.email = :email', { email: email })
       .getOne();
+    console.log('user:', user);
     if (!user) {
       throw new NotFoundException('User does not exist in the database');
     }
@@ -172,7 +174,6 @@ export class AuthService {
         user.refresh_token = refresh_token;
         await user.save();
         return {
-          refresh_token,
           token,
           user,
         };

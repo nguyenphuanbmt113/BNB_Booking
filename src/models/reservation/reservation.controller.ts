@@ -13,6 +13,9 @@ import { UserDeco } from '../auth/decorator/user.decorator';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { ReservationService } from './reservation.service';
 import { AuthenticationGuard } from '../auth/guards/jwt-guards.guard';
+import { UserRole } from 'src/common/entities/role.entity';
+import { Roles } from '../auth/decorator/role.decorator';
+import { RolesGuard } from '../auth/guards/role.guard';
 
 @Controller('reservation')
 export class ReservationController {
@@ -21,6 +24,10 @@ export class ReservationController {
   @Get()
   findAll() {
     return this.reservationService.findAll();
+  }
+  @Get()
+  findOne(@Param('id') id: number) {
+    return this.reservationService.findOneById(id);
   }
 
   @Get(':id')
@@ -33,7 +40,8 @@ export class ReservationController {
     return this.reservationService.delete(id);
   }
 
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(AuthenticationGuard, RolesGuard)
+  @Roles(UserRole.Host)
   @Post('create')
   async reserve(
     @UserDeco() user: User,
