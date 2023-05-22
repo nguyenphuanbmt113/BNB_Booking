@@ -144,7 +144,7 @@ export class Room extends BaseClassEntity {
       throw new BadRequestException('reservation wrong!');
     }
 
-    //kiểm tra
+    //kiểm tra sung đột ngay đặt rểvation room
     console.log('this.reservations:', this.reservations);
     if (!this.isAccommodable(reservation.getStayTerm())) {
       //false thì không thực hiện

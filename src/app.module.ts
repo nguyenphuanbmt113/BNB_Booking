@@ -48,10 +48,6 @@ import { AuthenticationGuard } from './models/auth/guards/jwt-guards.guard';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    {
-      provide: APP_GUARD,
-      useClass: AuthenticationGuard,
-    },
   ],
 })
 export class AppModule {}

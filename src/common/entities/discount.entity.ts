@@ -30,19 +30,36 @@ export class Discount extends BaseClassEntity {
 
   calculateDiscountFee(price: number, stayDays: number) {
     let result = 0;
+    // const now = new Date();
+
+    // if (
+    //   this.endDate.getTime() !== null &&
+    //   this.endDate.getTime() < now.getTime()
+    // ) {
+    //   return result;
+    // }
+
+    const isSatisfied = discountStrategies[this.type].isSatisfied(stayDays);
+    if (isSatisfied) result += price * (this.percent * 0.01);
+
+    return result;
+  }
+
+  calculateDiscountFeeV2(price: number, stayDays: number) {
+    let result = 0;
     const now = new Date();
 
+    //kiem tra xem date có hợp lệ hay không
     if (
       this.endDate.getTime() !== null &&
       this.endDate.getTime() < now.getTime()
     ) {
       return result;
     }
-
     const isSatisfied = discountStrategies[this.type].isSatisfied(stayDays);
-    if (isSatisfied) result += price * (this.percent * 0.01);
-
-    return result;
+    if (isSatisfied) {
+      result += price * (this.percent * 0.01);
+    }
   }
 }
 export interface DiscountStrategy {

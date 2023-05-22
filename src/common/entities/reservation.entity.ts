@@ -12,6 +12,7 @@ import BaseClassEntity from './global/base-entity.entity';
 import { User } from './user.entity';
 import { Room } from './room.entity';
 import { DateDiff, DateRange } from '../utils/datetime.utils';
+import { dateTransformer } from '../middleware/class-validate';
 
 export enum ReservationStatus {
   REQUESTED = 'REQUESTED',
@@ -40,11 +41,15 @@ export class Reservation extends BaseClassEntity {
   @IsEnum(ReservationStatus)
   status: ReservationStatus;
 
-  @Column()
+  @Column({
+    transformer: dateTransformer,
+  })
   @IsDate()
   checkIn: Date;
 
-  @Column()
+  @Column({
+    transformer: dateTransformer,
+  })
   @IsDate()
   checkOut: Date;
 

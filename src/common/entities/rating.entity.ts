@@ -3,6 +3,7 @@ import {
   Check,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -24,7 +25,11 @@ export class Rating extends BaseClassEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  reviewId: number;
+
   @ManyToOne(() => Review, (review) => review.ratings)
+  @JoinColumn()
   review: Review;
 
   @Column({ type: 'enum', enum: RatingCategory })

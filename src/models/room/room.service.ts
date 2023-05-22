@@ -56,6 +56,7 @@ export class RoomService {
   }
 
   async create(host: User, createRoomDto: any): Promise<any> {
+    console.log('createRoomDto:', createRoomDto);
     const {
       countryId,
       photos,
@@ -72,7 +73,7 @@ export class RoomService {
       await this.roomRepository.insert({
         host,
         country: { id: countryId },
-        amenities: amenityItemIds.map((id) => ({ id })),
+        amenities: amenityItemIds && amenityItemIds.map((id) => ({ id })),
         ...rest,
       })
     ).generatedMaps[0] as { id: number };
@@ -95,26 +96,32 @@ export class RoomService {
           room: { id: room.id },
         },
       ]),
-      this.ruleChoiceRepository.insert(
-        ruleChoices.map(({ ruleId, ...rest }) => ({
-          room: { id: room.id },
-          rule: { id: ruleId },
-          ...rest,
-        })),
-      ),
-      this.customRuleRepository.insert(
-        customRules.map((title) => ({ room: { id: room.id }, title })),
-      ),
-      this.detailChoiceRepository.insert(
-        detailChoices.map(({ detailId, ...rest }) => ({
-          detail: { id: detailId },
-          ...rest,
-        })),
-      ),
+      ruleChoices &&
+        this.ruleChoiceRepository.insert(
+          ruleChoices.map(({ ruleId, ...rest }) => ({
+            room: { id: room.id },
+            rule: { id: ruleId },
+            ...rest,
+          })),
+        ),
+      customRules &&
+        this.customRuleRepository.insert(
+          customRules.map((title) => ({
+            room: { id: room.id },
+            title,
+          })),
+        ),
+      detailChoices &&
+        this.detailChoiceRepository.insert(
+          detailChoices.map(({ detailId, ...rest }) => ({
+            detail: { id: detailId },
+            ...rest,
+          })),
+        ),
     ]);
 
     await parallelAsync.done();
-    return room;
+    return 'insert room success';
   }
 
   async findAllAmenities(): Promise<AmenityItem[]> {
